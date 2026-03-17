@@ -1,0 +1,79 @@
+.landing-page {
+  min-height: 100vh;
+  padding: 2rem;
+  font-family: Arial, sans-serif;
+  background-color: #ffffff;
+  color: #2b2b2b;
+}
+
+.hero,
+.features,
+.cta {
+  max-width: 900px;
+  margin: 0 auto 4rem auto;
+}
+
+.hero h1 {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+}
+
+.hero p {
+  font-size: 1.1rem;
+  line-height: 1.6;
+}
+
+.hero-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.hero-buttons button,
+.cta button {
+  padding: 0.9rem 1.4rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: #491404;
+  color: white;
+  font-size: 1rem;
+}
+
+.hero-buttons button:hover,
+.cta button:hover {
+  opacity: 0.9;
+}
+
+.mode-description {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.199);
+}
+
+.features h2,
+.cta h2 {
+  margin-bottom: 1.5rem;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.feature-card {
+  background-color: white;
+  padding: 1.2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.178);
+}
+
+.logo {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
