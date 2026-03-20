@@ -1,13 +1,17 @@
 import { useState } from "react";
 import "./LandingPage.css";
 import logo from "../assets/wallpaperDnD.png";
+import Navbar from "../components/Navbar";
 
-function LandingPage() {
+function LandingPage({ user }) {
   const [selectedMode, setSelectedMode] = useState(null);
 
   return (
+    <>
+    <Navbar user={user} />
     <main className="landing-page">
       <section className="hero">
+      
         <h1>D&DHelper</h1>
         <p>
           Une application pensée pour aider les joueurs et game masters de
@@ -82,6 +86,7 @@ function LandingPage() {
         <button>S’inscrire</button>
       </section>
     </main>
+    </>
   );
 }
 

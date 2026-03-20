@@ -6,6 +6,10 @@
   color: #2b2b2b;
 }
 
+h1, h2{
+  color: rgba(0, 0, 0, 0.753);
+}
+
 .hero,
 .features,
 .cta {
@@ -36,14 +40,15 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #491404;
+  background-color: #c2291e;
   color: white;
   font-size: 1rem;
+  opacity: 0.5;
 }
 
 .hero-buttons button:hover,
 .cta button:hover {
-  opacity: 0.9;
+  opacity: 1;
 }
 
 .mode-description {
