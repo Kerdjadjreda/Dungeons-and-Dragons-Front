@@ -4,44 +4,51 @@ import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 
 function ProfilePage({ user }) {
-    if (!user) {
-        return <Navigate to="/" />;
-    }
-
+    
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isJoinOpen, setIsJoinOpen] = useState(false);
     const [campaignName, setCampaignName] = useState("");
     const [mode, setMode] = useState("");
     const [synopsis, setSynopsis] = useState("");
     const [createSuccess, setCreateSuccess] = useState(false);
+    const [joinSuccess, setJoinSuccess] = useState(false);
     const [error, setError] = useState("");
     const [campaigns, setCampaigns] = useState([]);
-
+    const [inviteCode, setInviteCode] = useState("")
+    
+    
+    
     async function fetchCampaigns() {
         try {
             const response = await fetch("http://localhost:3000/campaigns", {
                 method: "GET",
                 credentials: "include",
             });
-
+            
             const data = await response.json();
-
+            
             if (!response.ok) {
                 setError(data.error || "Erreur lors du chargement des campagnes");
                 return;
             }
-
+            
             setCampaigns(data.campaignsList);
         } catch (err) {
             console.error(err);
             setError("La connexion au serveur a échoué.");
         }
     }
-
+    
     useEffect(() => {
+        if(!user) return;
         fetchCampaigns();
-    }, []);
-
+    }, [user]);
+    
+    if (!user) {
+    return <Navigate to="/" />;
+    }
+    
+    
     async function handleCreateCampaign(e) {
         e.preventDefault();
         setError("");
@@ -85,9 +92,42 @@ function ProfilePage({ user }) {
         }
     }
 
-    function handleJoinCampaign(e) {
+    async function handleJoinCampaign(e) {
         e.preventDefault();
         setError("");
+        try {
+            const response = await fetch("http://localhost:3000/campaigns/join", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+                body: JSON.stringify({
+                    invite_code: inviteCode
+                }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                setError(data.error);
+                return;
+            }
+
+            await fetchCampaigns();
+            setCreateSuccess(true);
+
+            setTimeout(() => {
+                setIsJoinOpen(false);
+                setJoinSuccess(false);
+                setInviteCode("");
+            }, 2000);
+
+            setError("");
+        } catch (err) {
+            console.error(err);
+            setError("La connexion au serveur a échoué.");
+        }
     }
 
     const onlineCampaigns = campaigns.filter(
@@ -152,8 +192,7 @@ function ProfilePage({ user }) {
                     onClick={() => {
                         setIsCreateOpen(false);
                         setCreateSuccess(false);
-                    }}
-                >
+                    }}>
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
                         <button
                             className="modal-close"
@@ -221,24 +260,40 @@ function ProfilePage({ user }) {
             )}
 
             {isJoinOpen && (
-                <div className="modal-overlay" onClick={() => setIsJoinOpen(false)}>
+                <div className="modal-overlay" onClick={() => {setIsJoinOpen(false); 
+                                                               setJoinSuccess(false); 
+                                                               setError("");
+                                                               setInviteCode("") } }>
                     <div className="modal" onClick={(e) => e.stopPropagation()}>
                         <button
                             className="modal-close"
-                            onClick={() => setIsJoinOpen(false)}
+                            onClick={() => { setIsJoinOpen(false); setJoinSuccess(false); setError(""); setInviteCode("") } }
                         >
                             X
                         </button>
+                        {!joinSuccess ? (
+                            <>
+                            
+                                <h2>Rejoindre une partie</h2>
+                                <form onSubmit={handleJoinCampaign}>
+                                    <div>
+                                        <label>Code d’invitation</label>
+                                        <input type="text" 
+                                                value={inviteCode}
+                                                onChange={(e) =>{setInviteCode(e.target.value); setError(""); }}
+                                        />
+                                    </div>
 
-                        <h2>Rejoindre une partie</h2>
-                        <form onSubmit={handleJoinCampaign}>
-                            <div>
-                                <label>Code d’invitation</label>
-                                <input type="text" />
+                                    <button type="submit">Rejoindre</button>
+                                    {error && <p>{error}</p>}
+                                </form>
+                            </>
+                        ) : (
+                            <div className="Succes-message">
+                                <h2>Campagne rejointe avec succès !</h2>
                             </div>
+                        )}
 
-                            <button type="submit">Rejoindre</button>
-                        </form>
                     </div>
                 </div>
             )}
