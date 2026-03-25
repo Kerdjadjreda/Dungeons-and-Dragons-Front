@@ -1,5 +1,5 @@
 import "./ProfilePage.css";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 
@@ -16,6 +16,7 @@ function ProfilePage({ user }) {
     const [campaigns, setCampaigns] = useState([]);
     const [inviteCode, setInviteCode] = useState("")
     
+    const navigate = useNavigate();
     
     
     async function fetchCampaigns() {
@@ -160,7 +161,8 @@ function ProfilePage({ user }) {
                             <p>Aucune partie en ligne en cours.</p>
                         ) : (
                             onlineCampaigns.map((campaign) => (
-                                <div key={campaign.id} className="campaign-card">
+                                <div key={campaign.id} className="campaign-card" 
+                                     onClick={() => navigate(`/campaigns/${campaign.id}`)}>
                                     <h3>{campaign.camp_name}</h3>
                                     <p>{campaign.synopsis}</p>
                                 </div>
@@ -176,7 +178,8 @@ function ProfilePage({ user }) {
                             <p>Aucune partie physique en cours.</p>
                         ) : (
                             physicalCampaigns.map((campaign) => (
-                                <div key={campaign.id} className="campaign-card">
+                                <div key={campaign.id} className="campaign-card"
+                                     onClick={() => navigate(`/campaigns/${campaign.id}`)}>
                                     <h3>{campaign.camp_name}</h3>
                                     <p>{campaign.synopsis}</p>
                                 </div>

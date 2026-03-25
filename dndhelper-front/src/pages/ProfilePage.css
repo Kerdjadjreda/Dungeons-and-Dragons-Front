@@ -99,8 +99,9 @@
 
 .campaign-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(201, 166, 92, 0.35);
+  border-color: rgb(255, 174, 0);
   box-shadow: 0 16px 30px rgba(0, 0, 0, 0.28);
+  cursor: pointer;
 }
 
 .campaign-card h3 {
