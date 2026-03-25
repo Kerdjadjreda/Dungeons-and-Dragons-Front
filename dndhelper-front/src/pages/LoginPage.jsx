@@ -16,8 +16,6 @@ function LoginPage({ setUser, user }) {
   // je retire le comportement par défaut du formulaire.
     e.preventDefault();
     setError("");
-    console.log("username :", username);
-    console.log("password :", password);
     try{
       const response = await fetch("http://localhost:3000/users/login", {
         method: "POST",
