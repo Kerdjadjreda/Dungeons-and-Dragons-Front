@@ -11,9 +11,14 @@ function CampaignPage({ user }) {
   const [characters, setCharacters] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+  async function handleCreateSessionCombat(e) {
+      e.preventDefault(); }
 
   useEffect(() => {
     if (!user) return;
+
 
     async function fetchCampaign() {
       setLoading(true);
@@ -79,10 +84,10 @@ function CampaignPage({ user }) {
       </>
     );
   }
-
+/* SUPPRIMER LA NAVBAR PLUS TARD, ELLE CASSE L'IMMERSION, JE FERAIS UN BOUTON "QUITTER LA PARTIE" */
   return (
     <>
-
+      <Navbar user={user}/>
       <main className="campaign-page">
         <section className="campaign-header">
           <h1>{campaign?.camp_name}</h1>
@@ -91,7 +96,7 @@ function CampaignPage({ user }) {
         </section>
         {isGameMaster && (
           <section className="gameMaster-button">
-            <button> créer une instance de combat</button>
+            <button onClick={() => setIsCreateOpen(true)}> créer une instance de combat</button>
           </section>
         )}
         <section className="campaign-map-section">
@@ -120,6 +125,64 @@ function CampaignPage({ user }) {
           </div>
         </section>
       </main>
+
+      {isCreateOpen && (
+        <div
+                    className="modal-overlay-combat-session"
+                    onClick={() => {
+                        setIsCreateOpen(false);
+                        
+                    }}>
+                    <div className="modal-combat-session" onClick={(e) => e.stopPropagation()}>
+                        <button
+                            className="modal-close"
+                            onClick={() => {
+                                setIsCreateOpen(false);
+                            }}
+                        >
+                            X
+                        </button>
+
+                        
+                       <h2>Création session de combat</h2>
+                       <p className="title-combat-session">Titre</p>
+                       <input className="input-combat-session" type="text" placeholder="ex: Ambuscade"/>
+                       <form className="combat-form" onSubmit={handleCreateSessionCombat}>
+
+                        <section className="characters-combat-section-modal">
+                          <h2>Quel(s) joueurs souhaitez-vous ajouter au combat ?</h2>
+
+                          <div className="characters-combat-section-list-modal">
+                              {characters.length === 0 ? (
+                                <p>Aucun personnage dans cette campagne pour le moment.</p>
+                              ) : (
+                                characters.map((character) => (
+                                  <div key={character.id} className="character-avatar">
+                                    <h3>{character.char_name}</h3>
+
+                                  </div>
+                                ))
+                              )}
+                          </div>
+                      </section>
+
+                      <section>
+                        <h2>Quel(s) monstres souhaitez-vous ajouter au combat ?</h2>
+                        <button type="button" className="choose-monster-btn">
+                          Choisir
+                        </button>
+                        <div className="monsters-combat-placeholder">
+                          Aucun monstre ajouté pour le moment.
+                        </div>
+                      </section>
+                        <button className="combat-btn" type="submit">Créer</button>
+                        {error && <p>{error}</p>}
+                      </form>
+                         
+                        
+                    </div>
+                </div>
+      )}
     </>
   );
 }

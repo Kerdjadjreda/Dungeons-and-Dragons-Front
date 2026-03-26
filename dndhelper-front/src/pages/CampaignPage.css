@@ -89,6 +89,19 @@
 }
 
 /* DICE */
+.gameMaster-button button{
+    border: none;
+    border-radius: 14px;
+  padding: 0.9rem 1.4rem;
+  background: linear-gradient(135deg, #c49b52, #a67a36);
+  color: #111;
+}
+
+.gameMaster-button button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 32px rgba(196, 155, 82, 0.32);
+  filter: brightness(1.03);
+}
 
 .dice-button {
   border: none;
@@ -184,7 +197,290 @@
   color: #f3e7c8;
 }
 
+.modal-overlay-combat-session {
+     position: fixed;
+    inset: 0;
+    background: rgba(7, 8, 12, 0.72);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    z-index: 999;
+}
+
+.modal-combat-session {
+    position: relative;
+  width: 100%;
+  height: 80%;
+  max-width: 80%;
+  background: linear-gradient(180deg, #212531 0%, #181b24 100%);
+  border: 1px solid rgba(201, 166, 92, 0.22);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  color: #f4efe6;
+}
+
+/* TITRE + CHAMP TITRE DE SESSION */
+
+.title-combat-session {
+  margin: 0 0 0.45rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e9dcc0;
+}
+
+.input-combat-session {
+  width: 100%;
+  max-width: 420px;
+  box-sizing: border-box;
+  padding: 0.9rem 1rem;
+  margin-bottom: 1.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: rgba(10, 12, 17, 0.6);
+  color: #f4efe6;
+  font-size: 0.98rem;
+  outline: none;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.input-combat-session:focus {
+  border-color: rgba(201, 166, 92, 0.7);
+  box-shadow: 0 0 0 3px rgba(201, 166, 92, 0.14);
+  background: rgba(10, 12, 17, 0.85);
+}
+
+.input-combat-session::placeholder {
+  color: #a8a39a;
+}
+
+/* FORMULAIRE GLOBAL */
+
+.combat-form {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  height: calc(100% - 120px);
+  overflow-y: auto;
+  padding-right: 0.35rem;
+}
+
+.combat-form::-webkit-scrollbar {
+  width: 8px;
+}
+
+.combat-form::-webkit-scrollbar-thumb {
+  background: rgba(201, 166, 92, 0.35);
+  border-radius: 999px;
+}
+
+/* BLOCS DE SECTION */
+
+.characters-combat-section-modal,
+.monsters-combat-section-modal {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(201, 166, 92, 0.14);
+  border-radius: 18px;
+  padding: 1.2rem;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+}
+
+.characters-combat-section-modal h2,
+.monsters-combat-section-modal h2 {
+  margin: 0 0 1rem;
+  font-size: 1.15rem;
+  color: #f3dfaf;
+}
+
+/* LISTE DE PERSONNAGES */
+
+.characters-combat-section-list-modal {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 1.3rem;
+  min-height: 180px;
+}
+
+/* CARTE PERSONNAGE */
+
+.character-avatar {
+  width: 135px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  transition: transform 0.18s ease;
+}
+
+.character-avatar:hover {
+  transform: translateY(-4px);
+}
+
+/* Le "carré image" du personnage */
+.character-avatar::before {
+  content: "";
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  display: block;
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(60, 65, 78, 0.95), rgba(37, 40, 50, 0.95));
+  border: 1px solid rgba(201, 166, 92, 0.22);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+/* Hover sur le carré */
+.character-avatar:hover::before {
+  border-color: rgba(201, 166, 92, 0.48);
+  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.3);
+}
+
+/* Légende en dessous */
+.character-avatar h3 {
+  width: 100%;
+  margin: 0.7rem 0 0;
+  padding: 0.55rem 0.75rem;
+  text-align: center;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #f6f1e7;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 166, 92, 0.14);
+  box-sizing: border-box;
+  word-break: break-word;
+}
+
+/* État sélectionné à utiliser plus tard */
+.character-avatar.selected::before {
+  border-color: #c49b52;
+  box-shadow:
+    0 0 0 3px rgba(196, 155, 82, 0.16),
+    0 18px 34px rgba(0, 0, 0, 0.3);
+  background:
+    linear-gradient(180deg, rgba(74, 61, 34, 0.95), rgba(42, 37, 27, 0.95));
+}
+
+.character-avatar.selected h3 {
+  border-color: rgba(201, 166, 92, 0.48);
+  background: rgba(201, 166, 92, 0.14);
+  color: #fff5de;
+}
+
+/* SECTION MONSTRES */
+
+.monsters-combat-section-modal {
+  min-height: 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.monsters-combat-placeholder {
+  flex: 1;
+  min-height: 120px;
+  border: 1px dashed rgba(201, 166, 92, 0.28);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bcb4a5;
+  text-align: center;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.choose-monster-btn {
+  align-self: flex-start;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 1.2rem;
+  background: linear-gradient(135deg, #c49b52, #a87c36);
+  color: #111;
+  font-size: 0.96rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 10px 24px rgba(196, 155, 82, 0.22);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.choose-monster-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px rgba(196, 155, 82, 0.28);
+}
+
+/* BOUTON CRÉER */
+
+.combat-btn {
+  align-self: center;
+  min-width: 180px;
+  border: none;
+  border-radius: 14px;
+  padding: 0.95rem 1.6rem;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #c49b52, #a87c36);
+  color: #111;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(196, 155, 82, 0.22);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.combat-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(196, 155, 82, 0.3);
+}
+
+/* ERREUR */
+
+.combat-form > p {
+  margin: 0;
+  text-align: center;
+  color: #ff9d9d;
+  font-weight: 600;
+}
+
 /* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .modal-combat-session {
+    height: 88%;
+    max-width: 95%;
+    padding: 1.25rem;
+  }
+
+  .characters-combat-section-list-modal {
+    gap: 1rem;
+  }
+
+  .character-avatar {
+    width: 120px;
+  }
+}
+
+@media (max-width: 640px) {
+  .input-combat-session {
+    max-width: 100%;
+  }
+
+  .character-avatar {
+    width: 105px;
+  }
+
+  .character-avatar h3 {
+    font-size: 0.88rem;
+  }
+}
 
 @media (max-width: 900px) {
   .campaign-page {
