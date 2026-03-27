@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import defaultCharacter from "../assets/default-character.jpg";
 
-function CombatSessionModal({ campaignId, characters, onClose }) {
+function CreateCombatSessionModal({ campaignId, characters, onClose }) {
   const [combatTitle, setCombatTitle] = useState("");
   const [error, setError] = useState("");
   const [isMonsterModalOpen, setIsMonsterModalOpen] = useState(false);
@@ -314,4 +314,4 @@ function CombatSessionModal({ campaignId, characters, onClose }) {
   );
 }
 
-export default CombatSessionModal;
+export default CreateCombatSessionModal;

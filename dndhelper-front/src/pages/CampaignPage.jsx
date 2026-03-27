@@ -3,7 +3,7 @@ import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./CampaignPage.css";
 import defaultCharacter from "../assets/default-character.jpg";
-import CombatSessionModal from "../components/CombatSessionModal";
+import CreateCombatSessionModal from "../components/CreateCombatSessionModal";
 
 function CampaignPage({ user }) {
   const { campaignId } = useParams();
@@ -102,7 +102,7 @@ function CampaignPage({ user }) {
           </section>
         )}
         {isCreateOpen && (
-          <CombatSessionModal
+          <CreateCombatSessionModal
             campaignId={campaignId}
             characters={characters}
             onClose={() => setIsCreateOpen(false)}
