@@ -209,6 +209,11 @@
     z-index: 999;
 }
 
+.modal-overlay-combat-session h2 {
+     font-size: 1.1rem;
+     color: #f3cd6e;
+}
+
 .modal-combat-session {
     position: relative;
   width: 100%;
@@ -299,7 +304,6 @@
 .characters-combat-section-list-modal {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
   flex-wrap: wrap;
   gap: 1.3rem;
   min-height: 180px;
@@ -308,7 +312,7 @@
 /* CARTE PERSONNAGE */
 
 .character-avatar {
-  width: 135px;
+  width: 120px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -320,34 +324,19 @@
   transform: translateY(-4px);
 }
 
-/* Le "carré image" du personnage */
-.character-avatar::before {
-  content: "";
+.character-avatar img {
   width: 100%;
   aspect-ratio: 1 / 1;
-  display: block;
+  object-fit: cover;
   border-radius: 18px;
-  background:
-    linear-gradient(180deg, rgba(60, 65, 78, 0.95), rgba(37, 40, 50, 0.95));
-  border: 1px solid rgba(201, 166, 92, 0.22);
+  border: 2px solid rgba(201, 166, 92, 0.2);
   box-shadow: 0 14px 30px rgba(0, 0, 0, 0.24);
-  transition:
-    border-color 0.18s ease,
-    box-shadow 0.18s ease,
-    transform 0.18s ease,
-    background 0.18s ease;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
-/* Hover sur le carré */
-.character-avatar:hover::before {
-  border-color: rgba(201, 166, 92, 0.48);
-  box-shadow: 0 18px 34px rgba(0, 0, 0, 0.3);
-}
-
-/* Légende en dessous */
-.character-avatar h3 {
+.character-avatar figcaption {
   width: 100%;
-  margin: 0.7rem 0 0;
+  margin-top: 0.7rem;
   padding: 0.55rem 0.75rem;
   text-align: center;
   font-size: 0.95rem;
@@ -360,19 +349,20 @@
   word-break: break-word;
 }
 
-/* État sélectionné à utiliser plus tard */
-.character-avatar.selected::before {
-  border-color: #c49b52;
-  box-shadow:
-    0 0 0 3px rgba(196, 155, 82, 0.16),
-    0 18px 34px rgba(0, 0, 0, 0.3);
-  background:
-    linear-gradient(180deg, rgba(74, 61, 34, 0.95), rgba(42, 37, 27, 0.95));
+.character-avatar.selected {
+  transform: translateY(-4px);
 }
 
-.character-avatar.selected h3 {
-  border-color: rgba(201, 166, 92, 0.48);
-  background: rgba(201, 166, 92, 0.14);
+.character-avatar.selected img {
+  border-color: rgba(201, 166, 92, 0.65);
+  box-shadow:
+    0 0 0 3px rgba(201, 166, 92, 0.16),
+    0 18px 34px rgba(0, 0, 0, 0.3);
+}
+
+.character-avatar.selected figcaption {
+  background: rgba(201, 166, 92, 0.18);
+  border-color: rgba(201, 166, 92, 0.45);
   color: #fff5de;
 }
 
@@ -404,6 +394,7 @@
   border: none;
   border-radius: 12px;
   padding: 0.85rem 1.2rem;
+  margin-bottom: 0.8rem;
   background: linear-gradient(135deg, #c49b52, #a87c36);
   color: #111;
   font-size: 0.96rem;
@@ -448,6 +439,129 @@
   text-align: center;
   color: #ff9d9d;
   font-weight: 600;
+}
+
+.modal-overlay-monster {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 8, 12, 0.72);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  z-index: 1000;
+}
+
+.modal-monster {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;
+  min-height: 500px;
+  background: linear-gradient(180deg, #212531 0%, #181b24 100%);
+  border: 1px solid rgba(201, 166, 92, 0.22);
+  border-radius: 20px;
+  padding: 2rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+  color: #f4efe6;
+}
+
+.monster-modal-content {
+  display: grid;
+  grid-template-columns: 1.2fr 0.9fr;
+  gap: 1.5rem;
+  margin-top: 1rem;
+}
+
+.monster-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-content: flex-start;
+}
+
+.monster-card {
+  width: 160px;
+  padding: 1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(201, 166, 92, 0.14);
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.monster-card:hover {
+  transform: translateY(-3px);
+  border-color: rgba(201, 166, 92, 0.4);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.monster-card.selected {
+  border-color: #c49b52;
+  box-shadow: 0 0 0 3px rgba(196, 155, 82, 0.14);
+}
+
+.monster-card h3,
+.monster-details h3 {
+  margin: 0 0 0.5rem;
+  color: #f3dfaf;
+}
+
+.monster-card p,
+.monster-details p {
+  margin: 0.25rem 0;
+  color: #d3cec3;
+}
+
+.monster-details {
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(201, 166, 92, 0.14);
+  border-radius: 16px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.monster-details label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.monster-details input {
+  max-width: 120px;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: none;
+  background: rgba(10, 12, 17, 0.7);
+  color: #f4efe6;
+}
+
+.selected-monsters-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  justify-content: center;
+}
+
+.selected-monster-card {
+  padding: 0.9rem 1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 166, 92, 0.14);
+  min-width: 150px;
+  text-align: center;
+}
+
+.selected-monster-card h4 {
+  margin: 0 0 0.4rem;
+  color: #f3dfaf;
+}
+
+.selected-monster-card p {
+  margin: 0.2rem 0;
+  color: #d3cec3;
 }
 
 /* RESPONSIVE */
@@ -517,5 +631,11 @@
   .character-card {
     width: 100%;
     min-height: auto;
+  }
+}
+
+@media (max-width: 900px) {
+  .monster-modal-content {
+    grid-template-columns: 1fr;
   }
 }
