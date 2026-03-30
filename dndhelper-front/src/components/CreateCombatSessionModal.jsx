@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import defaultCharacter from "../assets/default-character.jpg";
 
-function CreateCombatSessionModal({ campaignId, characters, onClose }) {
+function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCreated, }) {
   const [combatTitle, setCombatTitle] = useState("");
   const [error, setError] = useState("");
   const [isMonsterModalOpen, setIsMonsterModalOpen] = useState(false);
@@ -82,14 +82,16 @@ function CreateCombatSessionModal({ campaignId, characters, onClose }) {
         return;
       }
 
-      const combatSessionId = sessionData.combatSession?.id;
-
+      const combatSessionId = sessionData.id;
+      console.log("ID MODAL :", combatSessionId);
+      
       if (!combatSessionId) {
         setError("ID de session de combat introuvable.");
         return;
       }
+      onCombatCreated(combatSessionId);
 
-      const participants = selectedCharacters.map((character) => ({
+      const instancedCharacters = selectedCharacters.map((character) => ({
         characterId: Number(character.id),
         initiative: 10,
       }));
@@ -100,7 +102,7 @@ function CreateCombatSessionModal({ campaignId, characters, onClose }) {
           method: "POST",
           credentials: "include",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ participants }),
+          body: JSON.stringify({ characters: instancedCharacters }),
         }
       );
 
@@ -112,7 +114,7 @@ function CreateCombatSessionModal({ campaignId, characters, onClose }) {
       }
 
       const monsters = selectedMonsters.map((monster) => ({
-        monsterId: Number(monster.id),
+        monsterTemplateId: Number(monster.id),
         quantity: Number(monster.quantity),
         initiative: 10,
       }));
@@ -135,7 +137,6 @@ function CreateCombatSessionModal({ campaignId, characters, onClose }) {
           return;
         }
       }
-
       resetCombatModalState();
     } catch (err) {
       console.error(err);

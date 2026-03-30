@@ -1,0 +1,215 @@
+.combat-session-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 8, 12, 0.78);
+  backdrop-filter: blur(5px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 1.5rem;
+  z-index: 1100;
+  overflow-y: auto;
+}
+
+.combat-session-modal {
+  position: relative;
+  width: min(96vw, 1500px);
+  min-height: 86vh;
+  margin: 1rem auto;
+  padding: 1.5rem;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #212531 0%, #181b24 100%);
+  border: 1px solid rgba(201, 166, 92, 0.2);
+  box-shadow: 0 30px 70px rgba(0, 0, 0, 0.4);
+  color: #f4efe6;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.combat-session-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding-top: 0.5rem;
+}
+
+.combat-session-title {
+  min-width: 220px;
+  padding: 0.9rem 1.5rem;
+  border-radius: 14px;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(201, 166, 92, 0.22);
+  color: #f5e6c8;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.combat-session-subtitle {
+  padding: 0.45rem 1rem;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #d9d4cc;
+  font-size: 0.95rem;
+}
+
+.combat-session-tabs {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.combat-tab {
+  border: none;
+  padding: 0.7rem 1.1rem;
+  border-radius: 12px 12px 0 0;
+  background: rgba(255, 255, 255, 0.08);
+  color: #ddd7cd;
+  cursor: pointer;
+  font-weight: 600;
+  text-transform: lowercase;
+  transition: background 0.18s ease, color 0.18s ease;
+}
+
+.combat-tab.active {
+  background: linear-gradient(135deg, #c49b52, #a87c36);
+  color: #111;
+}
+
+.combat-session-body {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 1rem;
+  min-height: 560px;
+}
+
+.combat-main-panel {
+  position: relative;
+  border-radius: 18px;
+  background:
+    radial-gradient(circle at top, rgba(201, 166, 92, 0.05), transparent 35%),
+    linear-gradient(180deg, rgba(57, 61, 73, 0.96), rgba(44, 48, 58, 0.96));
+  border: 1px solid rgba(201, 166, 92, 0.16);
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.combat-entities-row {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  min-height: 220px;
+}
+
+.combat-entity-card {
+  width: 120px;
+  height: 170px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(201, 166, 92, 0.18);
+  color: #f4efe6;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.8rem;
+  box-sizing: border-box;
+  font-weight: 600;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+}
+
+.combat-roll-button {
+  align-self: flex-end;
+  border: none;
+  border-radius: 12px;
+  padding: 0.85rem 1.2rem;
+  background: linear-gradient(135deg, #c49b52, #a87c36);
+  color: #111;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(196, 155, 82, 0.24);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.combat-roll-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 16px 32px rgba(196, 155, 82, 0.32);
+}
+
+.combat-order-panel {
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(201, 166, 92, 0.16);
+  padding: 0.9rem 0.7rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.combat-order-panel h3 {
+  margin: 0;
+  color: #f3dfaf;
+  font-size: 1rem;
+  text-transform: uppercase;
+}
+
+.combat-order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  width: 100%;
+}
+
+.combat-order-item {
+  min-height: 42px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(201, 166, 92, 0.14);
+  color: #f2ece2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.combat-order-item.active {
+  background: linear-gradient(135deg, #c49b52, #a87c36);
+  color: #111;
+}
+
+@media (max-width: 900px) {
+  .combat-session-modal {
+    width: 100%;
+    min-height: auto;
+    padding: 1rem;
+  }
+
+  .combat-session-body {
+    grid-template-columns: 1fr;
+  }
+
+  .combat-order-panel {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .combat-order-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .combat-main-panel {
+    min-height: 420px;
+  }
+}
