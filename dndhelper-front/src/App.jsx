@@ -4,6 +4,7 @@ import LoginPage from "./pages/LoginPage";
 import ProfilePage from "./pages/ProfilePage";
 import CampaignPage from './pages/CampaignPage';
 import CharacterPage from './pages/CharacterPage';
+import RegisterPage from './pages/RegisterPage';
 import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
@@ -45,6 +46,7 @@ function App() {
   <BrowserRouter>
   <Routes>
   <Route path="/" element={<LandingPage user={user} />} />
+  <Route path="/register" element ={<RegisterPage />} />
   <Route path="/login" element={<LoginPage setUser={setUser} user={user} />} />
   <Route path="/profile" element={<ProfilePage user={user} />} />
   <Route path="/campaigns/:campaignId" element={<CampaignPage user={user} />} />

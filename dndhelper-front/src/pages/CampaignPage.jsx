@@ -14,8 +14,6 @@ function CampaignPage({ user }) {
   const [loading, setLoading] = useState(true);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
 
-
-
   useEffect(() => {
     if (!user) return;
 
