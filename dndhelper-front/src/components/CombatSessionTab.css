@@ -37,7 +37,7 @@
 /* vue carte */
 .campaign-map-box {
   width: 100%;
-  min-height: 430px;
+  min-height: 550px;
   box-sizing: border-box;
   padding: 1rem;
   border-radius: 20px;
@@ -66,7 +66,7 @@
 /* vue combat */
 .combat-session-box {
   width: 100%;
-  min-height: 430px;
+  min-height: 550px;
   box-sizing: border-box;
   padding: 1.5rem;
   border-radius: 20px;
@@ -148,6 +148,7 @@
   border: 1px solid rgba(201, 166, 92, 0.18);
   color: #f4efe6;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   text-align: center;
