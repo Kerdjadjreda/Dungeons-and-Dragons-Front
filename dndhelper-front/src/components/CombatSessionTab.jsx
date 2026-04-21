@@ -59,6 +59,33 @@ function CombatSessionTab({ combatSessionId }){
       }
     };
 
+    async function handleNextTurn() {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/combat-sessions/${combatSessionId}/next-turn`,
+          {
+            method: "PATCH",
+            credentials: "include",
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setCombatMessage(data.error || "Impossible de passer au tour suivant.");
+          return;
+        }
+
+        setCombatMessage("Tour terminé.");
+
+        await fetchCombatSession();
+      } catch (error) {
+        console.error(error);
+        setCombatMessage("La connexion au serveur a échoué.");
+      }
+    };
+
+
     async function fetchCombatSession(){
       setLoading(true);
       setError("");
@@ -93,56 +120,68 @@ function CombatSessionTab({ combatSessionId }){
       }
     }, [combatSessionId]);
 
-    
+    const activeEntity = instancesEntities.find(
+      (entity) => Number(entity.position) === Number(combatSession?.current_position)
+    );
 
     return(
-    <div className="combat-session-box">
-              <div className="combat-session-header-inline">
-                <div className="combat-session-title-inline">
-                  Combat {combatSession?.title}
-                </div>
-                <div className="combat-session-turn-inline">Tour {combatSession?.round_number +1}</div>
-              </div>
-              {combatMessage && (<div className="combat-message">
-                {combatMessage}
-              </div>
-                )}
-
-              <div className="combat-session-layout">
-                <div className="combat-session-main">
-                  <div className="combat-entities-row">
-                    {instancesEntities.map((entity) => (
-                      <article
-                        key={entity.id}
-                        className={`combat-entity-card ${
-                          selectedTargetId === Number(entity.id) ? "selected" : ""
-                        }`}
-                        onClick={() => {
-                          if (selectedAction === "attack") {
-                            setSelectedTargetId(Number(entity.id));
-                            setCombatMessage("");
-                          }
-                        }}
-                      >
-                        <div>{entity.position}</div>
-
-                        <div>
-                          {entity.entity_type === "character"
-                            ? entity.char_name
-                            : entity.monster_name}
-                        </div>
-
-                        <div>
-                          {entity.entity_type === "character"
-                            ? entity.char_class
-                            : entity.entity_type}
-                        </div>
-
-                        <div>HP: {entity.current_hp}</div>
-                      </article>
-                    ))}
+      <div className="combat-session-box">
+                <div className="combat-session-header-inline">
+                  <div className="combat-session-title-inline">
+                    Combat {combatSession?.title}
                   </div>
-                    <div className="combat-action-bar">
+                    <div className="combat-session-turn-inline">Tour {combatSession?.round_number +1}</div>
+                  <div className="combat-session-main">
+                    {activeEntity && (
+                      <p className="active-entity-banner">
+                        Au tour de{" "}
+                        <span>
+                          {activeEntity.entity_type === "character"
+                            ? activeEntity.char_name
+                            : activeEntity.monster_name}
+                        </span>
+                      </p>
+                    )}
+
+                    <div className="combat-entities-row">
+                      {instancesEntities.map((entity) => {
+                        const isActive =
+                          Number(entity.position) === Number(combatSession?.current_position);
+
+                        const isSelected = selectedTargetId === Number(entity.id);
+                        const isCharacter = entity.entity_type === "character";
+
+                        return (
+                          <article
+                            key={entity.id}
+                            className={`combat-entity-card ${
+                              isCharacter ? "entity-character" : "entity-monster"
+                            } ${isActive ? "active-turn" : ""} ${
+                              isSelected ? "selected" : ""
+                            }`}
+                            onClick={() => {
+                              setSelectedTargetId(Number(entity.id));
+                              setCombatMessage("");
+                            }}
+                          >
+                            <div>{entity.position}</div>
+
+                            <div>
+                              {isCharacter ? entity.char_name : entity.monster_name}
+                            </div>
+
+                            <div>
+                              {isCharacter ? entity.char_class : entity.entity_type}
+                            </div>
+
+                            <div>HP: {entity.current_hp}</div>
+ 
+                            {isActive && <div className="active-turn-arrow">▼</div>}                          
+                          </article>
+                        );
+                      })}
+                    </div>
+                    <div className="combat-actions-row">
                     <button
                       className={selectedAction === "attack" ? "combat-action-btn active" : "combat-action-btn"}
                       onClick={() => {
@@ -152,17 +191,16 @@ function CombatSessionTab({ combatSessionId }){
                     >
                       Attaquer
                     </button>
-                  </div>
-                  <button className="combat-roll-button-inline" onClick={handleRollAttack}>ROLL D20</button>
-                </div>
+                    <button className="combat-roll-button-inline" onClick={handleRollAttack}>ROLL D20</button>
+                    <button className="combat-end-turn-btn" onClick={handleNextTurn}> Fin de tour </button>
 
-                <aside className="combat-order-side">
-                  <h3>Ordre</h3>
-                  <div className="combat-order-item active">1</div>
-                  <div className="combat-order-item">2</div>
-                  <div className="combat-order-item">3</div>
-                  <div className="combat-order-item">4</div>
-                </aside>
+                    </div>
+              {combatMessage && (
+                <div className="combat-message">
+                  {combatMessage}
+                </div>
+              )}
+                </div>
               </div>
             </div>
     )
