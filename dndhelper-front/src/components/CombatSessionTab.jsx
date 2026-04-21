@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./CombatSessionTab.css"
 
 
-function CombatSessionTab({ combatSessionId }){
+function CombatSessionTab({ combatSessionId, isGameMaster }){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [combatSession, setCombatSession] = useState(null);
@@ -10,6 +10,7 @@ function CombatSessionTab({ combatSessionId }){
     const [selectedAction, setSelectedAction] = useState(null);
     const [selectedTargetId, setSelectedTargetId] = useState(null);
     const [combatMessage, setCombatMessage] = useState("");
+    const [hasActed, setHasActed] = useState(false);
 
     async function handleRollAttack() {
       try{
@@ -53,6 +54,7 @@ function CombatSessionTab({ combatSessionId }){
         await fetchCombatSession();
         setSelectedTargetId(null);
         setSelectedAction(null);
+        setHasActed(true);
 
       } catch(error){
         console.error(error);
@@ -77,7 +79,9 @@ function CombatSessionTab({ combatSessionId }){
         }
 
         setCombatMessage("Tour terminé.");
-
+        setHasActed(false)
+        setSelectedTargetId(null);
+        setSelectedAction(null);
         await fetchCombatSession();
       } catch (error) {
         console.error(error);
@@ -120,12 +124,46 @@ function CombatSessionTab({ combatSessionId }){
       }
     }, [combatSessionId]);
 
+    // FONCTION POUR METTRE FIN A UNE SESSION DE COMBAT PAR SON id
+    async function handleEndCombat() {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/combat-sessions/${combatSessionId}/end`,
+          {
+            method: "PATCH",
+            credentials: "include",
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          setCombatMessage(data.error || "Impossible de terminer le combat.");
+          return;
+        }
+
+        setCombatMessage("Le combat est terminé.");
+
+        await fetchCombatSession();
+
+      } catch (error) {
+        console.error(error);
+        setCombatMessage("Erreur serveur.");
+      }
+    }
+
     const activeEntity = instancesEntities.find(
       (entity) => Number(entity.position) === Number(combatSession?.current_position)
     );
+    
 
     return(
       <div className="combat-session-box">
+                {isGameMaster && (
+                  <button className="end-combat-btn" onClick={handleEndCombat}>
+                    Mettre fin au combat
+                  </button>
+                )}
                 <div className="combat-session-header-inline">
                   <div className="combat-session-title-inline">
                     Combat {combatSession?.title}
@@ -145,8 +183,8 @@ function CombatSessionTab({ combatSessionId }){
 
                     <div className="combat-entities-row">
                       {instancesEntities.map((entity) => {
-                        const isActive =
-                          Number(entity.position) === Number(combatSession?.current_position);
+                        const isDead = entity.is_dead || entity.current_hp === 0;
+                        const isActive = Number(entity.position) === Number(combatSession?.current_position);
 
                         const isSelected = selectedTargetId === Number(entity.id);
                         const isCharacter = entity.entity_type === "character";
@@ -154,12 +192,13 @@ function CombatSessionTab({ combatSessionId }){
                         return (
                           <article
                             key={entity.id}
-                            className={`combat-entity-card ${
-                              isCharacter ? "entity-character" : "entity-monster"
-                            } ${isActive ? "active-turn" : ""} ${
-                              isSelected ? "selected" : ""
-                            }`}
+                            className={`combat-entity-card 
+                              ${isCharacter ? "entity-character" : "entity-monster"} 
+                              ${isActive ? "active-turn" : ""} 
+                              ${isSelected ? "selected" : ""}
+                              ${isDead ? "dead-entity" : ""}`}
                             onClick={() => {
+                              if(isDead) return;
                               setSelectedTargetId(Number(entity.id));
                               setCombatMessage("");
                             }}
@@ -175,8 +214,8 @@ function CombatSessionTab({ combatSessionId }){
                             </div>
 
                             <div>HP: {entity.current_hp}</div>
- 
-                            {isActive && <div className="active-turn-arrow">▼</div>}                          
+                            {isDead && <div>Mort</div>}
+                            {isActive && !isDead && <div className="active-turn-arrow">▼</div>}                          
                           </article>
                         );
                       })}
@@ -188,10 +227,14 @@ function CombatSessionTab({ combatSessionId }){
                         setSelectedAction("attack");
                         setCombatMessage("");
                       }}
+                      disabled={hasActed}
                     >
                       Attaquer
                     </button>
-                    <button className="combat-roll-button-inline" onClick={handleRollAttack}>ROLL D20</button>
+                    <button className="combat-roll-button-inline" onClick={handleRollAttack} disabled={
+                      hasActed || selectedAction !== "attack" || !selectedTargetId}
+                    >
+                      ROLL D20</button>
                     <button className="combat-end-turn-btn" onClick={handleNextTurn}> Fin de tour </button>
 
                     </div>

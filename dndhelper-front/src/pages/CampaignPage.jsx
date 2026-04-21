@@ -155,7 +155,7 @@ function CampaignPage({ user }) {
           )}
 
           {activeTab === "combat" && (
-            <CombatSessionTab combatSessionId={combatSessionId} />
+            <CombatSessionTab combatSessionId={combatSessionId} isGameMaster ={isGameMaster} />
           )}
 
         </section>
