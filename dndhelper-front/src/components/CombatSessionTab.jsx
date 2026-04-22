@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./CombatSessionTab.css"
 
 
-function CombatSessionTab({ combatSessionId, isGameMaster }){
+function CombatSessionTab({ combatSessionId, isGameMaster, onCombatEnded}){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [combatSession, setCombatSession] = useState(null);
@@ -143,7 +143,10 @@ function CombatSessionTab({ combatSessionId, isGameMaster }){
         }
 
         setCombatMessage("Le combat est terminé.");
-
+        if (onCombatEnded && data.combatSession) {
+          onCombatEnded(data.combatSession);
+        }
+        
         await fetchCombatSession();
 
       } catch (error) {
@@ -160,9 +163,11 @@ function CombatSessionTab({ combatSessionId, isGameMaster }){
     return(
       <div className="combat-session-box">
                 {isGameMaster && (
+                  <>
                   <button className="end-combat-btn" onClick={handleEndCombat}>
                     Mettre fin au combat
                   </button>
+                  </>
                 )}
                 <div className="combat-session-header-inline">
                   <div className="combat-session-title-inline">

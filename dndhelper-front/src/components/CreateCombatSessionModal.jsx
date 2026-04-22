@@ -82,20 +82,20 @@ function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCre
         return;
       }
 
-      const combatSessionId = sessionData.id;
-      console.log("ID MODAL :", combatSessionId);
+      const newCombatSession = sessionData;
+      const combatSessionId = newCombatSession.id;
+      console.log("sessionData MODAL :", newCombatSession);
       
       if (!combatSessionId) {
         setError("ID de session de combat introuvable.");
         return;
       }
-      onCombatCreated(combatSessionId);
-
+      
       const instancedCharacters = selectedCharacters.map((character) => ({
         characterId: Number(character.id),
         initiative: 10,
       }));
-
+      
       const charactersResponse = await fetch(
         `http://localhost:3000/combat-sessions/${combatSessionId}/characters`,
         {
@@ -105,20 +105,20 @@ function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCre
           body: JSON.stringify({ characters: instancedCharacters }),
         }
       );
-
+      
       const charactersData = await charactersResponse.json();
-
+      
       if (!charactersResponse.ok) {
         setError(charactersData.error || "Impossible d'ajouter les personnages.");
         return;
       }
-
+      
       const monsters = selectedMonsters.map((monster) => ({
         monsterTemplateId: Number(monster.id),
         quantity: Number(monster.quantity),
         initiative: 10,
       }));
-
+      
       if (monsters.length > 0) {
         const monstersResponse = await fetch(
           `http://localhost:3000/combat-sessions/${combatSessionId}/monsters`,
@@ -129,21 +129,22 @@ function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCre
             body: JSON.stringify({ monsters }),
           }
         );
-
+        
         const monstersData = await monstersResponse.json();
-
+        
         if (!monstersResponse.ok) {
           setError(monstersData.error || "Impossible d'ajouter les monstres.");
           return;
         }
       }
+      onCombatCreated(newCombatSession);
       resetCombatModalState();
     } catch (err) {
       console.error(err);
       setError("Une erreur est survenue lors de la création du combat.");
     }
   }
-
+  
   useEffect(() => {
     async function fetchMonsters() {
       try {
@@ -151,7 +152,7 @@ function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCre
           method: "GET",
           credentials: "include",
         });
-
+        
         const data = await res.json();
         setMonstersCatalog(data.monsters || []);
       } catch (err) {
@@ -159,10 +160,10 @@ function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCre
         setMonstersCatalog([]);
       }
     }
-
+    
     fetchMonsters();
   }, []);
-
+  
   return (
     <>
       <div className="modal-overlay-combat-session" onClick={resetCombatModalState}>
@@ -179,7 +180,7 @@ function CreateCombatSessionModal({ campaignId, characters, onClose, onCombatCre
             placeholder="ex: Ambuscade"
             value={combatTitle}
             onChange={(e) => setCombatTitle(e.target.value)}
-          />
+            />
 
           <form className="combat-form" onSubmit={handleCreateSessionCombat}>
             <section className="characters-combat-section-modal">

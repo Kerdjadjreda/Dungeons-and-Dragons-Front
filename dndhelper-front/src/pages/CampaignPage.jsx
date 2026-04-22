@@ -11,7 +11,8 @@ function CampaignPage({ user }) {
   const { campaignId } = useParams();
   const navigate = useNavigate();
 
-  const [combatSessionId, setCombatSessionId] = useState(null);
+  const [combatSessions, setCombatSessions] = useState([]);
+  const [selectedCombatSessionId, setSelectedCombatSessionId] = useState(null);
   const [characters, setCharacters] = useState([]);
   const [campaign, setCampaign] = useState(null);
   const [error, setError] = useState("");
@@ -46,10 +47,13 @@ function CampaignPage({ user }) {
           setError(data.error || "Erreur lors du chargement de la campagne.");
           return;
         }
-
+console.log("combatSessions reçues :", data.combatSessions);
         setCampaign(data.campaign);
         setCharacters(data.characters || []);
-        setCombatSessionId(data.combatSessions?.[0]?.id ?? null);
+        const visibleCombatSessions = data.combatSessions || [];
+        setCombatSessions(visibleCombatSessions);
+        setSelectedCombatSessionId(visibleCombatSessions[0]?.id ?? null);
+
       } catch (err) {
         console.error(err);
         setError("La connexion au serveur a échoué.");
@@ -59,6 +63,7 @@ function CampaignPage({ user }) {
     }
 
     fetchCampaign();
+    
   }, [user, campaignId, navigate]);
 
   if (!user) {
@@ -89,6 +94,43 @@ function CampaignPage({ user }) {
     );
   }
 
+  async function handleCloseTab(combatSessionId) {
+    try {
+      const response = await fetch(
+        `http://localhost:3000/combat-sessions/${combatSessionId}/close-tab`,
+        {
+          method: "PATCH",
+          credentials: "include",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        console.error(data.error || "Impossible de fermer l'onglet.");
+        return;
+      }
+
+      const updatedSessions = combatSessions.filter(
+        (session) => session.id !== combatSessionId
+      );
+
+      setCombatSessions(updatedSessions);
+
+      if (selectedCombatSessionId === combatSessionId) {
+        if (updatedSessions.length > 0) {
+          setSelectedCombatSessionId(updatedSessions[0].id);
+          setActiveTab(`combat-${updatedSessions[0].id}`);
+        } else {
+          setSelectedCombatSessionId(null);
+          setActiveTab("map");
+        }
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   return (
     <>
       <Navbar user={user} />
@@ -115,10 +157,11 @@ function CampaignPage({ user }) {
             campaignId={campaignId}
             characters={characters}
             onClose={() => setIsCreateOpen(false)}
-            onCombatCreated={(newCombatSessionId) => {
-              setCombatSessionId(newCombatSessionId);
+            onCombatCreated={(newCombatSession) => {
+              setCombatSessions((prev) => [...prev, newCombatSession]);
+              setSelectedCombatSessionId(newCombatSession.id);
               setIsCreateOpen(false);
-              setActiveTab("combat");
+              setActiveTab(`combat-${newCombatSession.id}`);
             }}
           />
         )}
@@ -134,18 +177,36 @@ function CampaignPage({ user }) {
               Carte
             </button>
 
-            {combatSessionId !== null && combatSessionId !== undefined && (
-              <button
-                className={
-                  activeTab === "combat"
-                    ? "campaign-tab active"
-                    : "campaign-tab"
-                }
-                onClick={() => setActiveTab("combat")}
-              >
-                Combat {combatSessionId}
-              </button>
-            )}
+            {combatSessions.map((session) => (
+              <div key={session.id} className="combat-tab-wrapper">
+                <button
+                  className={
+                    activeTab === `combat-${session.id}`
+                      ? "campaign-tab active"
+                      : "campaign-tab"
+                  }
+                  onClick={() => {
+                    setSelectedCombatSessionId(session.id);
+                    setActiveTab(`combat-${session.id}`);
+                  }}
+                >
+                  {session.title || `combat ${session.id}`}
+                  {session.is_active === false ? " (terminé)" : ""}
+                </button>
+                {isGameMaster && session.is_active === false && (
+                <button
+                  className="modal-close"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleCloseTab(session.id);
+                  }}
+                >
+                  X
+                </button>
+
+                )}
+              </div>
+            ))}
           </div>
 
           {activeTab === "map" && (
@@ -154,9 +215,20 @@ function CampaignPage({ user }) {
             </div>
           )}
 
-          {activeTab === "combat" && (
-            <CombatSessionTab combatSessionId={combatSessionId} isGameMaster ={isGameMaster} />
+          {selectedCombatSessionId && activeTab === `combat-${selectedCombatSessionId}` && (
+            <CombatSessionTab 
+              combatSessionId={selectedCombatSessionId} 
+              isGameMaster ={isGameMaster} 
+              onCombatEnded={(endedCombatSession) => {
+                setCombatSessions((prev) =>
+                  prev.map((session) =>
+                    session.id === endedCombatSession.id ? endedCombatSession : session
+                  )
+                );
+              }}
+            />
           )}
+          
 
         </section>
           <button className="dice-button">Lancé de dés</button>
