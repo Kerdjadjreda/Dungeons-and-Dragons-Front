@@ -5,7 +5,7 @@ import "./CampaignPage.css";
 import defaultCharacter from "../assets/default-character.jpg";
 import CreateCombatSessionModal from "../components/CreateCombatSessionModal";
 import CombatSessionTab from "../components/CombatSessionTab";
-
+import { io } from "socket.io-client";
 
 function CampaignPage({ user }) {
   const { campaignId } = useParams();
@@ -21,7 +21,36 @@ function CampaignPage({ user }) {
   const [activeTab, setActiveTab] = useState("map");
 
   useEffect(() => {
-    if (!user) return;
+    if (!user) return; 
+    fetchCampaign();  
+  }, [user, campaignId]);
+
+  useEffect(() => {
+    const socket = io("http://localhost:3000", {
+      withCredentials: true,
+    });
+  
+    socket.on("connect", () => {
+    console.log("Socket connectée :", socket.id);
+  
+    socket.emit("join_campaign", Number(campaignId));
+    });
+  
+    socket.on("campaign_updated", (payload) => {
+      console.log("campaign_updated reçu :", payload);
+      fetchCampaign();
+    });
+  
+    socket.on("disconnect", () => {
+      console.log("Socket déconnectée");
+    });
+  
+    return () => {
+      socket.disconnect();
+    };
+
+  }, [user, campaignId]);
+  
 
     async function fetchCampaign() {
       setLoading(true);
@@ -52,7 +81,14 @@ console.log("combatSessions reçues :", data.combatSessions);
         setCharacters(data.characters || []);
         const visibleCombatSessions = data.combatSessions || [];
         setCombatSessions(visibleCombatSessions);
-        setSelectedCombatSessionId(visibleCombatSessions[0]?.id ?? null);
+        setSelectedCombatSessionId((prevSelectedId) => {
+          const stillExists = visibleCombatSessions.some(
+            (session) => session.id === prevSelectedId
+          );
+
+          if (stillExists) return prevSelectedId;
+          return visibleCombatSessions[0]?.id ?? null;
+        });
 
       } catch (err) {
         console.error(err);
@@ -62,9 +98,6 @@ console.log("combatSessions reçues :", data.combatSessions);
       }
     }
 
-    fetchCampaign();
-    
-  }, [user, campaignId, navigate]);
 
   if (!user) {
     return <Navigate to="/" />;
