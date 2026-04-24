@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import "./CombatSessionTab.css"
+import "./CombatSessionTab.css";
+import { io } from "socket.io-client";
 
 
-function CombatSessionTab({ combatSessionId, isGameMaster, onCombatEnded}){
+function CombatSessionTab({ combatSessionId, campaignId, isGameMaster, onCombatEnded}){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [combatSession, setCombatSession] = useState(null);
@@ -11,6 +12,32 @@ function CombatSessionTab({ combatSessionId, isGameMaster, onCombatEnded}){
     const [selectedTargetId, setSelectedTargetId] = useState(null);
     const [combatMessage, setCombatMessage] = useState("");
     const [hasActed, setHasActed] = useState(false);
+
+    // je mets en place un useEffect pour brancher un websocket.
+
+    useEffect(() => {
+      const socket = io("http://localhost:3000", {
+        withCredentials: true,
+      });
+
+      socket.on("connect", () => {
+        console.log("Socket combat connecté :", socket.id);
+        socket.emit("join_campaign", Number(campaignId));
+      });
+
+
+      socket.on("combat_updated", (payload) => {
+        console.log("combat_updated reçu :", payload);
+
+        // je vérifie bien que c'est ce combat en question
+        if(Number(payload.combatSessionId) === Number(combatSessionId)) {
+          fetchCombatSession();
+        }
+      });
+      return () => {
+        socket.disconnect();
+      };
+    }, [campaignId, combatSessionId]);
 
     async function handleRollAttack() {
       try{
@@ -102,7 +129,7 @@ function CombatSessionTab({ combatSessionId, isGameMaster, onCombatEnded}){
           }
         );
         const data = await response.json();
-        console.log(data.instancesEntities)
+        console.log("INFOS DSUR LA SESSION DE COMBAT !!!!!!", data)
         setCombatSession(data.combatSession);
         setInstancesEntities(data.instancesEntities);
         
@@ -146,7 +173,7 @@ function CombatSessionTab({ combatSessionId, isGameMaster, onCombatEnded}){
         if (onCombatEnded && data.combatSession) {
           onCombatEnded(data.combatSession);
         }
-        
+
         await fetchCombatSession();
 
       } catch (error) {

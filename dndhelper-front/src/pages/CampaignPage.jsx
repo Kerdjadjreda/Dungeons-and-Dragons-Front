@@ -252,6 +252,7 @@ console.log("combatSessions reçues :", data.combatSessions);
             <CombatSessionTab 
               combatSessionId={selectedCombatSessionId} 
               isGameMaster ={isGameMaster} 
+              campaignId={campaignId}
               onCombatEnded={(endedCombatSession) => {
                 setCombatSessions((prev) =>
                   prev.map((session) =>
