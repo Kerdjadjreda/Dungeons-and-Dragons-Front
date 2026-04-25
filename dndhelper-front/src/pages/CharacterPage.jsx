@@ -2,6 +2,7 @@ import "./CharacterPage.css";
 import { useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import defaultCharacter from "../assets/default-character.jpg";
+import Navbar from "../components/Navbar";
 
 function CharacterPage({ user }) {
   const { campaignId } = useParams();
@@ -75,6 +76,7 @@ function CharacterPage({ user }) {
 
   return (
     <>
+    <navBar user={user} />
       <h1 className="character-title">Création de personnage</h1>
 
       <form className="character-sheet" onSubmit={handleSubmit}>

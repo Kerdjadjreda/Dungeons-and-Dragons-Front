@@ -45,12 +45,12 @@ function App() {
   return (
   <BrowserRouter>
   <Routes>
-  <Route path="/" element={<LandingPage user={user} />} />
+  <Route path="/" element={<LandingPage user={user} setUser={setUser} />} />
   <Route path="/register" element ={<RegisterPage />} />
   <Route path="/login" element={<LoginPage setUser={setUser} user={user} />} />
-  <Route path="/profile" element={<ProfilePage user={user} />} />
-  <Route path="/campaigns/:campaignId" element={<CampaignPage user={user} />} />
-  <Route path="/campaigns/:campaignId/characters/create" element={<CharacterPage user={user} />}
+  <Route path="/profile" element={<ProfilePage user={user} setUser={setUser} />} />
+  <Route path="/campaigns/:campaignId" element={<CampaignPage user={user} setUser={setUser} />} />
+  <Route path="/campaigns/:campaignId/characters/create" element={<CharacterPage user={user} setUser={setUser} />}
 />
   </Routes>
   </BrowserRouter>

@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import "./CampaignPage.css";
-import defaultCharacter from "../assets/default-character.jpg";
+import defaultAvatar from "../assets/avatars/avatarsDnd_09.jpg";
 import CreateCombatSessionModal from "../components/CreateCombatSessionModal";
 import CombatSessionTab from "../components/CombatSessionTab";
+import CharacterDetailsModal from "../components/CharacterDetailsModal";
 import { io } from "socket.io-client";
 
-function CampaignPage({ user }) {
+function CampaignPage({ user, setUser }) {
   const { campaignId } = useParams();
   const navigate = useNavigate();
 
   const [combatSessions, setCombatSessions] = useState([]);
   const [selectedCombatSessionId, setSelectedCombatSessionId] = useState(null);
   const [characters, setCharacters] = useState([]);
+  const [selectedCharacterId, setSelectedCharacterId] = useState(null);
   const [campaign, setCampaign] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -66,6 +68,12 @@ function CampaignPage({ user }) {
         );
 
         const data = await response.json();
+
+        if(response.status === 401) {
+          setUser(null);
+          navigate('/login');
+          return;
+        }
 
         if (!response.ok) {
           if (data.error?.toLowerCase().includes("créer un personnage")) {
@@ -253,6 +261,7 @@ console.log("combatSessions reçues :", data.combatSessions);
               combatSessionId={selectedCombatSessionId} 
               isGameMaster ={isGameMaster} 
               campaignId={campaignId}
+              setUser={setUser}
               onCombatEnded={(endedCombatSession) => {
                 setCombatSessions((prev) =>
                   prev.map((session) =>
@@ -275,15 +284,25 @@ console.log("combatSessions reçues :", data.combatSessions);
               <p>Aucun personnage dans cette campagne pour le moment.</p>
             ) : (
               characters.map((character) => (
-                <div key={character.id} className="character-card">
-                  <img src={defaultCharacter} alt={character.char_name} />
+                <div key={character.id} className="character-items">
+                <div 
+                  className="character-card"
+                  onClick={() => setSelectedCharacterId(character.id)}
+                >
+                  <img src={defaultAvatar} alt={character.char_name} />
+                </div>
                   <h3>{character.char_name}</h3>
-                  <p>{character.char_class}</p>
                 </div>
               ))
             )}
           </div>
         </section>
+        {selectedCharacterId && (
+          <CharacterDetailsModal
+            campaignId={campaignId}
+            onClose={() => setSelectedCharacterId(null)}
+          />
+        )}
       </main>
     </>
   );

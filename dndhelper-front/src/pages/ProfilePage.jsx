@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 import { useState, useEffect } from "react";
 
-function ProfilePage({ user }) {
+function ProfilePage({ user, setUser }) {
     
     const [isCreateOpen, setIsCreateOpen] = useState(false);
     const [isJoinOpen, setIsJoinOpen] = useState(false);
@@ -69,6 +69,12 @@ function ProfilePage({ user }) {
             });
 
             const data = await response.json();
+
+            if(response.status === 401) {
+                setUser(null);
+                navigate('/login');
+                return;
+            }
 
             if (!response.ok) {
                 setError(data.error);

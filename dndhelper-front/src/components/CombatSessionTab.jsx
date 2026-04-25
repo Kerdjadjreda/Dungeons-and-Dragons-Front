@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import "./CombatSessionTab.css";
 import { io } from "socket.io-client";
+import { useNavigate } from "react-router-dom";
 
 
-function CombatSessionTab({ combatSessionId, campaignId, isGameMaster, onCombatEnded}){
+function CombatSessionTab({ combatSessionId, campaignId, isGameMaster, onCombatEnded, setUser }){
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [combatSession, setCombatSession] = useState(null);
@@ -13,6 +14,7 @@ function CombatSessionTab({ combatSessionId, campaignId, isGameMaster, onCombatE
     const [combatMessage, setCombatMessage] = useState("");
     const [hasActed, setHasActed] = useState(false);
 
+    const navigate = useNavigate();
     // je mets en place un useEffect pour brancher un websocket.
 
     useEffect(() => {
@@ -99,6 +101,11 @@ function CombatSessionTab({ combatSessionId, campaignId, isGameMaster, onCombatE
         );
 
         const data = await response.json();
+        if(response.status === 401) {
+          setUser(null);
+          navigate('/login');
+          return;
+        }
 
         if (!response.ok) {
           setCombatMessage(data.error || "Impossible de passer au tour suivant.");
