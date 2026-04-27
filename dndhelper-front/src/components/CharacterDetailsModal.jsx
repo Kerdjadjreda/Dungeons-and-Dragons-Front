@@ -54,6 +54,7 @@ function CharacterDetailsModal({ campaignId, onClose }) {
         {!loading && !error && character && (
           <div className="character-modal-layout">
             <section className="character-panel">
+              <p>Prochainement disponible !</p>
               <h3>Inventaire</h3>
 
               <div className="inventory-grid">

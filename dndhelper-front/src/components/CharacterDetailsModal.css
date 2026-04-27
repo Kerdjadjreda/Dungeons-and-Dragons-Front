@@ -1,3 +1,12 @@
+.character-card.disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.character-card.clickable {
+  cursor: pointer;
+}
+
 .character-modal-overlay {
   position: fixed;
   inset: 0;

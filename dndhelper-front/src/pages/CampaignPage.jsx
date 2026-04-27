@@ -283,17 +283,25 @@ console.log("combatSessions reçues :", data.combatSessions);
             {characters.length === 0 ? (
               <p>Aucun personnage dans cette campagne pour le moment.</p>
             ) : (
-              characters.map((character) => (
-                <div key={character.id} className="character-items">
-                <div 
-                  className="character-card"
-                  onClick={() => setSelectedCharacterId(character.id)}
-                >
-                  <img src={defaultAvatar} alt={character.char_name} />
-                </div>
-                  <h3>{character.char_name}</h3>
-                </div>
-              ))
+              characters.map((character) => {
+                const currentUserId = user?.userId || user?.id;
+                const isMyCharacter = Number(character.user_id) === Number(currentUserId);
+
+                return(
+                  <div key={character.id} className="character-items">
+                  <div 
+                    className={`character-card ${isMyCharacter ? "clickable" : "disabled"}`}
+                    onClick={() => {
+                      if(!isMyCharacter) return;
+                      setSelectedCharacterId(character.id);
+                    }}
+                  >
+                    <img src={defaultAvatar} alt={character.char_name} />
+                  </div>
+                    <h3>{character.char_name}</h3>
+                  </div>
+                )
+              })
             )}
           </div>
         </section>
