@@ -286,13 +286,17 @@ console.log("combatSessions reçues :", data.combatSessions);
               characters.map((character) => {
                 const currentUserId = user?.userId || user?.id;
                 const isMyCharacter = Number(character.user_id) === Number(currentUserId);
+                // j'élargie la logique. Un admin peut consulter l'inventaire de tout le monde.
+                
+                const isAdmin = campaign?.role === "Maitre du jeu" ;
+                const canOpenInv = isMyCharacter || isAdmin;
 
                 return(
                   <div key={character.id} className="character-items">
                   <div 
-                    className={`character-card ${isMyCharacter ? "clickable" : "disabled"}`}
+                    className={`character-card ${canOpenInv ? "clickable" : "disabled"}`}
                     onClick={() => {
-                      if(!isMyCharacter) return;
+                      if(!canOpenInv) return;
                       setSelectedCharacterId(character.id);
                     }}
                   >
@@ -308,6 +312,7 @@ console.log("combatSessions reçues :", data.combatSessions);
         {selectedCharacterId && (
           <CharacterDetailsModal
             campaignId={campaignId}
+            characterId={selectedCharacterId}
             onClose={() => setSelectedCharacterId(null)}
           />
         )}

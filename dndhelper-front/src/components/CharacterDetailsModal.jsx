@@ -2,43 +2,44 @@ import { useEffect, useState } from "react";
 import "./CharacterDetailsModal.css";
 import defaultAvatar from "../assets/avatars/avatarsDnd_09.jpg";
 
-function CharacterDetailsModal({ campaignId, onClose }) {
+function CharacterDetailsModal({ campaignId, characterId, onClose }) {
   const [character, setCharacter] = useState(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function fetchMyCharacter() {
-      setLoading(true);
-      setError("");
+    async function fetchCharacterDetails() {
+        setLoading(true);
+        setError("");
 
-      try {
-        const response = await fetch(
-          `http://localhost:3000/characters/me/${campaignId}`,
-          {
-            method: "GET",
-            credentials: "include",
+        try {
+          const response = await fetch(
+            `http://localhost:3000/characters/${characterId}/campaigns/${campaignId}`,
+            {
+              method: "GET",
+              credentials: "include",
+            }
+          );
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            setError(data.error || "Tu ne peux pas consulter ce personnage.");
+            return;
           }
-        );
 
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError(data.error || "Tu ne peux pas consulter ce personnage.");
-          return;
+          setCharacter(data.character || data);
+        } catch (error) {
+          console.error(error);
+          setError("Impossible de charger ce personnage.");
+        } finally {
+          setLoading(false);
         }
-
-        setCharacter(data.character || data);
-      } catch (error) {
-        console.error(error);
-        setError("Impossible de charger ce personnage.");
-      } finally {
-        setLoading(false);
       }
+      if (characterId) {
+        fetchCharacterDetails();
     }
-
-    fetchMyCharacter();
-  }, [campaignId]);
+  }, [campaignId, characterId]);
 
   return (
     <div className="character-modal-overlay">
