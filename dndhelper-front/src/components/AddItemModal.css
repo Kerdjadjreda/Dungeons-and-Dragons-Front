@@ -1,0 +1,93 @@
+.add-item-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 8, 12, 0.75);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+
+.add-item-modal {
+  position: relative;
+  width: min(92vw, 460px);
+  max-height: 88vh;
+  overflow: auto;
+  padding: 1.5rem;
+  border-radius: 18px;
+  background: radial-gradient(circle at top, #2a211b 0%, #141216 75%);
+  border: 1px solid rgba(201, 166, 92, 0.4);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.75);
+  color: #f4efe6;
+}
+
+.add-item-modal h2 {
+  margin: 0 0 1rem;
+  color: #f3dfaf;
+}
+
+.add-item-close {
+  position: absolute;
+  top: 0.8rem;
+  right: 0.9rem;
+  border: none;
+  background: transparent;
+  color: #f3dfaf;
+  font-size: 1.4rem;
+  cursor: pointer;
+}
+
+.add-item-form {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.add-item-form .form-group {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.add-item-form label {
+  font-size: 0.9rem;
+  color: #d6d1c8;
+}
+
+.add-item-form input,
+.add-item-form textarea,
+.add-item-form select {
+  width: 95%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid rgba(201, 166, 92, 0.28);
+  background: rgba(255, 255, 255, 0.08);
+  color: #f4efe6;
+  outline: none;
+}
+
+.add-item-form textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+.add-item-form button[type="submit"] {
+  margin-top: 0.5rem;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 12px;
+  background: #c9a65c;
+  color: #141216;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-item-form button[type="submit"]:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.form-error {
+  color: #ff8c8c;
+  margin: 0;
+  font-size: 0.9rem;
+}

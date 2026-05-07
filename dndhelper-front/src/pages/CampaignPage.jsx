@@ -313,6 +313,7 @@ console.log("combatSessions reçues :", data.combatSessions);
           <CharacterDetailsModal
             campaignId={campaignId}
             characterId={selectedCharacterId}
+            isGameMaster={isGameMaster}
             onClose={() => setSelectedCharacterId(null)}
           />
         )}

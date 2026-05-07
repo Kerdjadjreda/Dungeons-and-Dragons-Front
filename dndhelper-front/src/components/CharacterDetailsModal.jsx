@@ -1,34 +1,35 @@
 import { useEffect, useState } from "react";
 import "./CharacterDetailsModal.css";
 import defaultAvatar from "../assets/avatars/avatarsDnd_09.jpg";
+import AddItemModal from "../components/AddItemModal";
 
-function CharacterDetailsModal({ campaignId, characterId, onClose }) {
+function CharacterDetailsModal({ campaignId, characterId, isGameMaster, onClose }) {
   const [character, setCharacter] = useState(null);
   const [itemList, setItemList] = useState([]);
+  const [isAddItemOpen, setIsAddItemOpen] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    async function fetchCharacterDetails() {
-        setLoading(true);
-        setError("");
-
-        try {
-          const response = await fetch(
-            `http://localhost:3000/characters/${characterId}/campaigns/${campaignId}`,
-            {
+  async function fetchCharacterDetails() {
+    setLoading(true);
+    setError("");
+    
+    try {
+      const response = await fetch(
+        `http://localhost:3000/characters/${characterId}/campaigns/${campaignId}`,
+        {
               method: "GET",
               credentials: "include",
             }
           );
-
+          
           const data = await response.json();
-
+          
           if (!response.ok) {
             setError(data.error || "Tu ne peux pas consulter ce personnage.");
             return;
           }
-
+          
           setCharacter(data.character || data);
           setItemList(data.itemList || []);
         } catch (error) {
@@ -38,6 +39,7 @@ function CharacterDetailsModal({ campaignId, characterId, onClose }) {
           setLoading(false);
         }
       }
+      useEffect(() => {
       if (characterId) {
         fetchCharacterDetails();
     }
@@ -57,6 +59,19 @@ function CharacterDetailsModal({ campaignId, characterId, onClose }) {
         {!loading && !error && character && (
           <div className="character-modal-layout">
             <section className="character-panel">
+              {isGameMaster && (
+                <button onClick={() => setIsAddItemOpen(true)}>
+                  + Ajouter un objet
+                </button>
+              )}
+              {isAddItemOpen && (
+                <AddItemModal
+                  characterId={characterId}
+                  campaignId={campaignId}
+                  onClose={() => setIsAddItemOpen(false)}
+                  onItemAdded={fetchCharacterDetails}
+                />
+              )}
               <p>Prochainement disponible !</p>
               <h3>Inventaire</h3>
 
