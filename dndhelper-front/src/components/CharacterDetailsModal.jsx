@@ -4,6 +4,7 @@ import defaultAvatar from "../assets/avatars/avatarsDnd_09.jpg";
 
 function CharacterDetailsModal({ campaignId, characterId, onClose }) {
   const [character, setCharacter] = useState(null);
+  const [itemList, setItemList] = useState([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
 
@@ -29,6 +30,7 @@ function CharacterDetailsModal({ campaignId, characterId, onClose }) {
           }
 
           setCharacter(data.character || data);
+          setItemList(data.itemList || []);
         } catch (error) {
           console.error(error);
           setError("Impossible de charger ce personnage.");
@@ -59,9 +61,33 @@ function CharacterDetailsModal({ campaignId, characterId, onClose }) {
               <h3>Inventaire</h3>
 
               <div className="inventory-grid">
-                {Array.from({ length: 48 }).map((_, index) => (
-                  <div key={index} className="inventory-slot"></div>
-                ))}
+                {Array.from({ length: 48 }).map((_, index) => {
+                  const item = itemList[index];
+
+                  return (
+                    <div key={index} className="inventory-slot">
+                      {item && (
+                        <div className="inventory-item">
+                          <img src={defaultAvatar} alt={item.item_name} />
+
+                          <div className="item-tooltip">
+                            <strong>{item.item_name}</strong>
+
+                            {item.item_description && <p>{item.item_description}</p>}
+
+                            {item.effect_type && (
+                              <p>
+                                {item.effect_type} : {item.effect_value}
+                              </p>
+                            )}
+
+                            <p>Qt : {item.quantity}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </section>
 
